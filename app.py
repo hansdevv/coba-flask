@@ -1,10 +1,18 @@
 from flask import Flask, render_template
+from flask_flatpages import FlatPages
 
 app = Flask(__name__)
+app.config.from_pyfile('config.cfg')
+pages = FlatPages(app)
 
 @app.route('/')
-def home():
-    return render_template('home.html')
+def index():
+    return render_template('index.html', pages=pages)
+
+@app.route('/<path:path>/')
+def page(path):
+    page = pages.get_or_404(path)
+    return render_template('page.html', page=page)
 
 if __name__ == '__main__':
     app.run()
